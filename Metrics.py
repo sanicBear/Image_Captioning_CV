@@ -178,9 +178,9 @@ def train(EPOCHS):
     data_train = Data(data, partitions['train'])
     data_valid = Data(data, partitions['valid'])
     data_test = Data(data, partitions['test'])
-    dataloader_train = DataLoader(data_train, batch_size=201, shuffle=True)
-    dataloader_test = DataLoader(data_valid, batch_size=201, shuffle=True)
-    dataloader_valid = DataLoader(data_test, batch_size=201, shuffle=True)
+    dataloader_train = DataLoader(data_train, batch_size=32, shuffle=True)
+    dataloader_test = DataLoader(data_valid, batch_size=32, shuffle=True)
+    dataloader_valid = DataLoader(data_test, batch_size=32, shuffle=True)
     
     model = Model().to(DEVICE)
     model.train()
