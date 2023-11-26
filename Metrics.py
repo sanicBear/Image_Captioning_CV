@@ -12,7 +12,7 @@ import evaluate
 from torch.utils.data import DataLoader
 
 
-DEVICE = 'CUDA'
+DEVICE = 'cuda'
 
 #base_path = '/home/sisard/Documents/universitat/year_3/semester_1/Computer_Vision/Image_Captioning/'
 base_path = '/fhome/gia03/'
