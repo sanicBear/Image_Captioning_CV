@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 DEVICE = 'CUDA'
 
 #base_path = '/home/sisard/Documents/universitat/year_3/semester_1/Computer_Vision/Image_Captioning/'
-base_path = '/fhome/gia03@3090/'
+base_path = '/fhome/gia03/'
 img_path = f'{base_path}Images/'
 cap_path = f'{base_path}captions.txt'
 
