@@ -256,3 +256,4 @@ valid_dataloader = DataLoader(Data(data, partitions['valid']), batch_size=16, sh
 train(EPOCHS=5, model=model, optimizer=optimizer, criterion=criterion, train_dataloader=train_dataloader, valid_dataloader=valid_dataloader)
 
 torch.save(model.state_dict(),'/fhome/gia03/Gloria/model.pth')
+print('hola')
