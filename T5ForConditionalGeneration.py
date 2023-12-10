@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # Define paths
 data_dir = "/fhome/gia03/Images_split"
 train_txt = "/fhome/gia03/Images_split/train/train_images.txt"
-val_txt = "/fhome/gia03/Images_split/validation/validation_imags.txt"
+val_txt = "/fhome/gia03/Images_split/validation/validation_images.txt"
 train_image_dir = "/fhome/gia03/Images_splittrain"
 val_image_dir = "/fhome/gia03/Images_splitvalidation"
 model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
