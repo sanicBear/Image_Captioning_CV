@@ -32,7 +32,7 @@ def preprocess_data(data_file, image_dir):
 
   images, captions = [], []
   for line in lines:
-    image_name, caption = line.split("\t")
+    image_name, caption = line.strip().split(',', 1)
     images.append(os.path.join(image_dir, image_name))
     captions.append(caption)
 
