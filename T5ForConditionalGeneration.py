@@ -100,8 +100,7 @@ loss_fn = torch.nn.CrossEntropyLoss()
 if torch.cuda.is_available():
     device = torch.device("cuda")
     model.to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr).to(device.type)
-    loss_fn = torch.nn.CrossEntropyLoss().to(device.type)
+
 else:
   device = torch.device("cpu")
 
