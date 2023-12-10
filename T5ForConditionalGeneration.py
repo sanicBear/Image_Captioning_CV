@@ -74,11 +74,6 @@ class CaptionDataset(Dataset):
     caption = self.captions[idx]
     tokenized_caption = tokenize(caption)
 
-    image = torch.Tensor(image)
-    tokenized_caption = torch.Tensor(tokenized_caption)
-    if torch.cuda.is_available():
-      image.cuda()
-      tokenized_caption.cuda()
 
     return image, tokenized_caption
 
@@ -94,11 +89,22 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # Load model
 model = T5ForConditionalGeneration.from_pretrained("t5-base")
-if torch.cuda.is_available():
-  model.cuda()
+
 # Define optimizer and loss function
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 loss_fn = torch.nn.CrossEntropyLoss()
+
+
+
+
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    model.to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr).to(device.type)
+    loss_fn = torch.nn.CrossEntropyLoss().to(device.type)
+else:
+  device = torch.device("cpu")
+
 
 # Train model
 train_losses, val_losses = [], []
@@ -109,16 +115,16 @@ for epoch in range(epochs):
   # Train loop
   model.train()
   for images, captions in tqdm(train_loader):
+    images = images.to(device)
+    captions = {key: value.to(device) for key, value in captions.items()}
+
 
     # Move data to GPU if available
   
     optimizer.zero_grad()
 
-    # Encode images
-    image_features = model.encoder(input_ids=images)
-
-    # Decode captions
-    decoder_outputs = model.decoder(input_ids=captions["input_ids"], attention_mask=captions["attention_mask"], encoder_hidden_states=image_features)
+    image_features = model.encoder.to(device)(input_ids=images.to(device))
+    decoder_outputs = model.decoder.to(device)(input_ids=captions["input_ids"].to(device), attention_mask=captions["attention_mask"].to(device), encoder_hidden_states=image_features)
 
     # Calculate loss
     loss = loss_fn(decoder_outputs.logits.view(-1, decoder_outputs.logits.shape[-1]), captions["labels"].view(-1))
