@@ -74,6 +74,12 @@ class CaptionDataset(Dataset):
     caption = self.captions[idx]
     tokenized_caption = tokenize(caption)
 
+    image = torch.FloatTensor(image)
+    tokenized_caption = torch.FloatTensor(tokenized_caption)
+    if torch.cuda.is_available():
+      image.cuda()
+      tokenized_caption.cuda()
+
     return image, tokenized_caption
 
 # Create datasets and dataloaders
@@ -88,7 +94,8 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # Load model
 model = T5ForConditionalGeneration.from_pretrained("t5-base")
-
+if torch.cuda.is_available():
+  model.cuda()
 # Define optimizer and loss function
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 loss_fn = torch.nn.CrossEntropyLoss()
@@ -104,14 +111,7 @@ for epoch in range(epochs):
   for images, captions in tqdm(train_loader):
 
     # Move data to GPU if available
-    if torch.cuda.is_available():
-      images = torch.FloatTensor(images)
-      images = images.cuda()
-      captions = torch.FloatTensor(captions)
-      captions["input_ids"] = captions["input_ids"].cuda()
-      captions["attention_mask"] = captions["attention_mask"].cuda()
-      captions["labels"] = captions["labels"].cuda()
-
+  
     optimizer.zero_grad()
 
     # Encode images
