@@ -15,6 +15,7 @@ val_txt = "/fhome/gia03/Images_split/validation/validation_imags.txt"
 train_image_dir = "/fhome/gia03/Images_splittrain"
 val_image_dir = "/fhome/gia03/Images_splitvalidation"
 model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
+output_dir = "/fhome/gia03/loss_plots"
 
 # Hyperparameters
 batch_size = 32
@@ -100,6 +101,14 @@ for epoch in range(epochs):
   # Train loop
   model.train()
   for images, captions in tqdm(train_loader):
+
+    # Move data to GPU if available
+    if torch.cuda.is_available():
+      images = images.cuda()
+      captions["input_ids"] = captions["input_ids"].cuda()
+      captions["attention_mask"] = captions["attention_mask"].cuda()
+      captions["labels"] = captions["labels"].cuda()
+
     optimizer.zero_grad()
 
     # Encode images
@@ -117,25 +126,30 @@ for epoch in range(epochs):
 
     train_loss += loss.item()
 
-  # Validation loop
-  model.eval()
-  with torch.no_grad():
-    for images, captions in val_loader:
-      # Encode images
-      image_features = model.encoder(input_ids=images)
-
-      # Decode captions
-      decoder_outputs = model.decoder(input_ids=captions["input_ids"], attention_mask=captions["attention_mask"], encoder_hidden_states=image_features)
-
-      # Calculate loss
-      loss = loss_fn(decoder_outputs.logits.view(-1, decoder_outputs.logits.shape[-1]), captions["labels"].view(-1))
-
-      val_loss += loss.item()
 
   # Save loss
   train_losses.append(train_loss / len(train_loader))
   val_losses.append(val_loss / len(val_loader))
 
-  # Save model
-  if epoch == epochs - 1:
-    torch.save(model.state_dict(), os.path.join(model_path, f"model_{epoch}.pth"))
+
+plt.figure(figsize=(10, 5))
+plt.plot(train_losses, label="Train Loss")
+plt.plot(val_losses, label="Validation Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.legend()
+plt.title("Train and Validation Loss")
+
+# Save plot as jpg
+plt.savefig(f"T5ForConditionalGeneration_loss_{epoch}.png") 
+
+
+
+# Plot and save loss in specified directory
+plt.savefig(os.path.join(loss_output_dir, f"loss_{epoch}.jpg"), format="jpg")
+
+
+
+# Save model
+  
+torch.save(model.state_dict(), os.path.join(model_path, f"model_{epoch}.pth"))
