@@ -3,17 +3,18 @@ import random
 import torch
 from torch.utils.data import DataLoader
 from transformers import BertTokenizerFast, T5ForConditionalGeneration
+from torch.utils.data import Dataset
 from tqdm import tqdm
 from PIL import Image
 import matplotlib.pyplot as plt
 
 # Define paths
-data_dir = "/path/to/flickr8k"
-train_txt = os.path.join(data_dir, "captions.txt")
-val_txt = os.path.join(data_dir, "val_captions.txt")
-train_image_dir = os.path.join(data_dir, "Images")
-val_image_dir = os.path.join(data_dir, "Validation")
-model_path = "/path/to/save/model.pt"
+data_dir = "/fhome/gia03/Images_split"
+train_txt = "/fhome/gia03/Images_split/train/train_images.txt"
+val_txt = "/fhome/gia03/Images_split/validation/validation_imags.txt"
+train_image_dir = "/fhome/gia03/Images_splittrain"
+val_image_dir = "/fhome/gia03/Images_splitvalidation"
+model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
 
 # Hyperparameters
 batch_size = 32

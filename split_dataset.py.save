@@ -78,11 +78,11 @@ def check_indexes(file1_path, file2_path, file3_path):
 
     # Return True if any common indexes are found, else return False
     return bool(common_indexes)
-
+'''
 if __name__ == "__main__":
-    file1_path = "/fhome/gia03/Images_split/test/test_images.txt"
-    file2_path = "/fhome/gia03/Images_split/train/train_images.txt"
-    file3_path = "/fhome/gia03/Images_split/validation/validation_images.txt"
+    file1_path = "/home/sisard/Documents/universitat/year_3/semester_1/Computer_Vision/Image_Captioning/git_repo/testing/test/test_images.txt"
+    file2_path = "/home/sisard/Documents/universitat/year_3/semester_1/Computer_Vision/Image_Captioning/git_repo/testing/train/train_images.txt"
+    file3_path = "/home/sisard/Documents/universitat/year_3/semester_1/Computer_Vision/Image_Captioning/git_repo/testing/validation/validation_images.txt"
 
     has_common_indexes = check_indexes(file1_path, file2_path, file3_path)
 
@@ -95,5 +95,4 @@ images_folder = '/fhome/gia03/'
 output_folder = '/fhome/gia03/Images_split'
 
 
-split_dataset(images_folder, output_folder)
-'''
+s
