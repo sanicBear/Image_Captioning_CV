@@ -74,8 +74,8 @@ class CaptionDataset(Dataset):
     caption = self.captions[idx]
     tokenized_caption = tokenize(caption)
 
-    image = torch.FloatTensor(image)
-    tokenized_caption = torch.FloatTensor(tokenized_caption)
+    image = torch.Tensor(image)
+    tokenized_caption = torch.Tensor(tokenized_caption)
     if torch.cuda.is_available():
       image.cuda()
       tokenized_caption.cuda()
