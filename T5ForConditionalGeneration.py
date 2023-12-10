@@ -16,7 +16,7 @@ val_txt = "/fhome/gia03/Images_split/validation/validation_images.txt"
 train_image_dir = "/fhome/gia03/Images_split/train"
 val_image_dir = "/fhome/gia03/Images_split/validation"
 model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
-output_dir = "/fhome/gia03/loss_plots"
+loss_output_dir = "/fhome/gia03/loss_plots"
 
 # Hyperparameters
 batch_size = 32
@@ -105,7 +105,9 @@ for epoch in range(epochs):
 
     # Move data to GPU if available
     if torch.cuda.is_available():
+      images = torch.FloatTensor(images)
       images = images.cuda()
+      captions = torch.FloatTensor(captions)
       captions["input_ids"] = captions["input_ids"].cuda()
       captions["attention_mask"] = captions["attention_mask"].cuda()
       captions["labels"] = captions["labels"].cuda()
