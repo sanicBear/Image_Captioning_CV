@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 data_dir = "/fhome/gia03/Images_split"
 train_txt = "/fhome/gia03/Images_split/train/train_images.txt"
 val_txt = "/fhome/gia03/Images_split/validation/validation_images.txt"
-train_image_dir = "/fhome/gia03/Images_splittrain"
-val_image_dir = "/fhome/gia03/Images_splitvalidation"
+train_image_dir = "/fhome/gia03/Images_split/train"
+val_image_dir = "/fhome/gia03/Images_split/validation"
 model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
 output_dir = "/fhome/gia03/loss_plots"
 
