@@ -10,6 +10,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Define paths
+'''
 data_dir = "/fhome/gia03/Images_split"
 train_txt = "/fhome/gia03/Images_split/train/train_images.txt"
 val_txt = "/fhome/gia03/Images_split/validation/validation_images.txt"
@@ -17,9 +18,17 @@ train_image_dir = "/fhome/gia03/Images_split/train"
 val_image_dir = "/fhome/gia03/Images_split/validation"
 model_path = "/fhome/gia03/all_models/T5ForCOnditionalGeneration.pth"
 loss_output_dir = "/fhome/gia03/loss_plots"
-
+''' 
+data_dir = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing"
+train_txt = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/train/train_images.txt"
+val_txt = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/validation/validation_images.txt"
+train_image_dir = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/train"
+val_image_dir = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/validation"
+model_path = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/Models/T5ForCOnditionalGeneration.pth"
+loss_output_dir = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/Loss_output/loss_plots"
+  
 # Hyperparameters
-batch_size = 32
+batch_size = 8
 max_seq_len = 50
 lr = 0.001
 epochs = 10
@@ -71,6 +80,7 @@ class CaptionDataset(Dataset):
   def __getitem__(self, idx):
     image_path = self.images[idx]
     image = preprocess_image(image_path)
+    image = image.long()
     caption = self.captions[idx]
     tokenized_caption = tokenize(caption)
 
@@ -104,41 +114,75 @@ if torch.cuda.is_available():
 else:
   device = torch.device("cpu")
 
-
+model.encoder.to(device)
+model.decoder.to(device)
 # Train model
 train_losses, val_losses = [], []
-for epoch in range(epochs):
-  train_loss = 0
-  val_loss = 0
 
   # Train loop
-  model.train()
-  for images, captions in tqdm(train_loader):
-    images = images.to(device)
-    captions = {key: value.to(device) for key, value in captions.items()}
 
+train_losses = []
+val_losses = []
 
-    # Move data to GPU if available
-  
-    optimizer.zero_grad()
+for epoch in range(epochs):
+    model.train()
+    train_loss = 0.0
 
-    image_features = model.encoder.to(device)(input_ids=images.to(device))
-    decoder_outputs = model.decoder.to(device)(input_ids=captions["input_ids"].to(device), attention_mask=captions["attention_mask"].to(device), encoder_hidden_states=image_features)
+    for images, captions in tqdm(train_loader, desc=f"Epoch {epoch + 1} - Training"):
+        images = images.to(device)
+        captions = {key: torch.stack(value, dim=0).to(device) for key, value in captions.items()}
 
-    # Calculate loss
-    loss = loss_fn(decoder_outputs.logits.view(-1, decoder_outputs.logits.shape[-1]), captions["labels"].view(-1))
+        optimizer.zero_grad()
 
-    # Backpropagation
-    loss.backward()
-    optimizer.step()
+        # Move encoder and decoder to GPU if not done outside the loop
+        # model.encoder.to(device)
+        # model.decoder.to(device)
 
-    train_loss += loss.item()
+        image_features = model.encoder(images)
+        decoder_outputs = model.decoder(
+            input_ids=captions["input_ids"],
+            attention_mask=captions["attention_mask"],
+            encoder_hidden_states=image_features.detach()
+        )
 
+        # Calculate loss
+        loss = loss_fn(decoder_outputs.logits.view(-1, decoder_outputs.logits.shape[-1]),
+                       captions["labels"].view(-1))
 
-  # Save loss
-  train_losses.append(train_loss / len(train_loader))
-  val_losses.append(val_loss / len(val_loader))
+        # Backpropagation
+        loss.backward()
+        optimizer.step()
 
+        train_loss += loss.item()
+
+    # Save training loss
+    train_losses.append(train_loss / len(train_loader))
+
+    # Validation loop
+    model.eval()
+    val_loss = 0.0
+
+    with torch.no_grad():
+        for images, captions in tqdm(val_loader, desc=f"Epoch {epoch + 1} - Validation"):
+            images = images.to(device)
+            captions = {key: value.to(device) for key, value in captions.items()}
+
+            image_features = model.encoder(images)
+            decoder_outputs = model.decoder(
+                input_ids=captions["input_ids"],
+                attention_mask=captions["attention_mask"],
+                encoder_hidden_states=image_features.detach()
+            )
+
+            loss = loss_fn(decoder_outputs.logits.view(-1, decoder_outputs.logits.shape[-1]),
+                           captions["labels"].view(-1))
+
+            val_loss += loss.item()
+
+    # Save validation loss
+    val_losses.append(val_loss / len(val_loader))
+
+    print(f"Epoch {epoch + 1}/{epochs} - Training Loss: {train_losses[-1]:.4f}, Validation Loss: {val_losses[-1]:.4f}")
 
 plt.figure(figsize=(10, 5))
 plt.plot(train_losses, label="Train Loss")
