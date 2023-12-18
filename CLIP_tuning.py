@@ -4,6 +4,7 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import os
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 # Load the model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
@@ -30,7 +31,7 @@ class DataSet(Dataset):
                 line = line.strip().split(",")
                 image_paths.append(line[0].strip())
                 captions.append(line[1])
-                print(captions)
+                
         return image_paths, captions
     def __len__(self):
         return len(self.image_paths)
@@ -65,7 +66,7 @@ val_losses = []
 for epoch in range(epochs):
     model.train()
     total_train_loss = 0
-    for images, captions in train_loader:
+    for images, captions in tqdm(train_loader):
         images = images.to(device)
         
         # Tokenize and move captions to the correct device
