@@ -1,10 +1,8 @@
 /Images
 /env_img_capt
-/testing
+
 /Models
 /Loss_output
 /train
-/testing/test
-/testing/train
-/testing/validation
+
 /.vector_cache
