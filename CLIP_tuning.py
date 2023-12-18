@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 # Load the model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
-path_save_model = ''
-path_save_plot = ''
-path = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/train'
-val_path = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/validation'
+path_save_model = '/fhome/gia03/all_models/CLIP_fine_tuning.pth'
+path_save_plot = '/fhome/gia03/loss_plots/CLIP_fine_tuning.png'
+path = '/fhome/gia03/Image_Captioning_CV/testing/train'
+val_path = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/validation/fhome/gia03/Image_Captioning_CV/testing/validation'
 
 # Define the Dataset
 class DataSet(Dataset):
