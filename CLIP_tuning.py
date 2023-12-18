@@ -8,8 +8,8 @@ from tqdm import tqdm
 # Load the model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
-path_save_model = '/fhome/gia03/all_models/CLIP_fine_tuning.pth'
-path_save_plot = '/fhome/gia03/loss_plots/CLIP_fine_tuning.png'
+path_save_model = '/fhome/gia03/Image_Captioning_CV/all_models/CLIP_fine_tuning.pth'
+path_save_plot = '/fhome/gia03/Image_Captioning_CV/loss_plots/CLIP_fine_tuning.png'
 path = '/fhome/gia03/Image_Captioning_CV/testing/train'
 val_path = '/fhome/gia03/Image_Captioning_CV/testing/validation'
 
