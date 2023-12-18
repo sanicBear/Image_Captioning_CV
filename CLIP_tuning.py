@@ -106,8 +106,27 @@ for epoch in range(epochs):
     total_val_loss = 0
     with torch.no_grad():
         for images, captions in val_loader:
-            # ... existing validation code ...
-            total_val_loss += total_loss.item()
+            images = images.to(device)
+            captions = clip.tokenize(captions).to(device)
+            image_features, text_features = model(images, captions)
+
+            # Normalize features to compute similarity
+            image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+            text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+
+            # Compute similarity
+            # Dot product between all image and text features (batch_size x batch_size matrix)
+            logits_per_image = image_features @ text_features.t()
+            logits_per_text = text_features @ image_features.t()
+
+            # Labels for the contrastive loss (diagonal elements are positives)
+            ground_truth = torch.arange(images.shape[0], dtype=torch.long, device=device)
+
+            # Compute the loss
+            val_loss_img = loss_fn(logits_per_image, ground_truth)
+            val_loss_txt = loss_fn(logits_per_text, ground_truth)
+            total_val_loss = (val_loss_img + val_loss_txt) / 2
+            total_val_loss += total_val_loss.item()
 
     avg_val_loss = total_val_loss / len(val_loader)
     val_losses.append(avg_val_loss)
