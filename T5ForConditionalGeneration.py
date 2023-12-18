@@ -106,7 +106,6 @@ loss_fn = torch.nn.CrossEntropyLoss()
 
 
 
-
 if torch.cuda.is_available():
     device = torch.device("cuda")
     model.to(device)

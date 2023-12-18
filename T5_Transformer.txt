@@ -1,0 +1,131 @@
+import torch
+from transformers import BertTokenizer, BertForSequenceClassification, AdamW
+from PIL import Image
+from torchvision.transforms import functional as F
+from torch.utils.data import Dataset, DataLoader
+from tqdm import tqdm
+from torchvision.transforms import Resize
+# Set device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Paths to the dataset folders
+train_folder = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/train"
+validation_folder = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/validation"
+test_folder = "/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/test"
+
+
+# BERT model and tokenizer
+model_name = "bert-base-uncased"
+tokenizer = BertTokenizer.from_pretrained(model_name)
+model = BertForSequenceClassification.from_pretrained(model_name).to(device)
+
+# Custom dataset class
+class ImageCaptionDataset(Dataset):
+    def __init__(self, folder_path, split="train", target_size=(500, 400)):
+        self.folder_path = folder_path
+        self.split = split
+        self.target_size = target_size
+        self.image_paths, self.captions = self.load_data()
+
+    def load_data(self):
+        image_paths = []
+        captions = []
+        with open(f"{self.folder_path}/{self.split}.txt", "r") as file:
+            for line in file:
+                line = line.strip().split(",")
+                image_paths.append(line[0].strip())
+                captions.append(",".join(line[1:]).strip())
+        return image_paths, captions
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        image_path = f"{self.folder_path}/{self.image_paths[idx]}"
+        image = Image.open(image_path).convert("RGB")
+
+        # Resize image to the target size
+        transform = Resize(self.target_size)
+        image = transform(image)
+
+        image = F.to_tensor(image).unsqueeze(0).to(device)
+        caption = self.captions[idx]
+        return image, caption
+# Create datasets and data loaders
+train_dataset = ImageCaptionDataset(train_folder, split="train")
+validation_dataset = ImageCaptionDataset(validation_folder, split="validation")
+test_dataset = ImageCaptionDataset(test_folder, split="test")
+
+train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True, drop_last = True)
+validation_loader = DataLoader(validation_dataset, batch_size=16, shuffle=False, drop_last = True)
+test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False, drop_last = True)
+
+# Training loop (you may need to adjust this based on your specific use case)
+optimizer = AdamW(model.parameters(), lr=1e-4)
+num_epochs = 5
+print('**********************************+')
+print(len(train_dataset), len(validation_dataset), len(test_dataset))
+
+for epoch in range(num_epochs):
+    model.train()
+    for images, captions in tqdm(train_loader, desc=f"Epoch {epoch + 1}"):
+        optimizer.zero_grad()
+
+        inputs = tokenizer(
+            list(captions),
+            return_tensors="pt",
+            truncation=True,
+            padding=True,
+            max_length=50,
+            return_attention_mask=True,
+            
+        ).to(device)
+
+        outputs = model(**inputs, labels=inputs["input_ids"])
+        loss = outputs.loss
+        loss.backward()
+        optimizer.step()
+
+    # Validation (optional)
+    model.eval()
+    with torch.no_grad():
+        for images, captions in validation_loader:
+            inputs = tokenizer(
+                list(captions),
+                return_tensors="pt",
+                truncation=True,
+                padding=True,
+                max_length=50,
+                return_attention_mask=True,
+                
+            ).to(device)
+
+            outputs = model(**inputs, labels=inputs["input_ids"])
+            validation_loss = outputs.loss
+
+    print(f"Epoch {epoch + 1}, Training Loss: {loss.item()}, Validation Loss: {validation_loss.item()}")
+
+# Testing loop
+model.eval()
+results = []
+
+with torch.no_grad():
+    for images, captions in tqdm(test_loader, desc="Testing"):
+        inputs = tokenizer(
+            list(captions),
+            return_tensors="pt",
+            truncation=True,
+            padding=True,
+            max_length=50,
+            return_attention_mask=True,
+            
+        ).to(device)
+
+        outputs = model(**inputs, labels=inputs["input_ids"])
+        output_ids = torch.argmax(outputs.logits, dim=1)
+        generated_captions = tokenizer.batch_decode(output_ids, skip_special_tokens=True)
+        results.extend(generated_captions)
+
+# Print some generated captions
+for i in range(5):
+    print(f"Generated Caption {i + 1}: {results[i]}")
