@@ -1,8 +1,11 @@
+attention_model_state.pth
 /Images
 /env_img_capt
 
 /Models
 /Loss_output
 /train
-
+/testing
+/testing/fast
 /.vector_cache
+attention_model_state.pth

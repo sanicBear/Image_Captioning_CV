@@ -1,3 +1,4 @@
+image,caption
 662606040_8cc8cd9f1b.jpg,"A small dog runs after a red ball , though a leafy outdoor area ."
 662606040_8cc8cd9f1b.jpg,A dog and a red ball in the air .
 662606040_8cc8cd9f1b.jpg,A small dog is running behind a red ball thrown towards bushes .

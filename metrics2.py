@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """Metrics.ipynb
 
@@ -24,6 +25,7 @@ import torch.optim as optim
 from torchvision import transforms
 from torchvision.models import resnet18
 import random
+import matplotlib.pyplot as plt
 
 
 DEVICE = 'cuda'
@@ -52,10 +54,6 @@ char2idx = {v: k for k, v in enumerate(chars)}
 TEXT_MAX_LEN = 201
 
 
-'''metrics'''
-bleu = evaluate.load('bleu')
-meteor = evaluate.load('meteor')
-rouge = evaluate.load('rouge')
 
 
 def text_to_indices(text, char2idx):
@@ -140,23 +138,35 @@ def id2str(seq):
 def train_one_epoch(model, optimizer, criterion, dataloader):
     model.train()
     total_loss = 0
+    losses = []
 
     for img_batch, caption_batch in tqdm(dataloader):
         img_batch, caption_batch = img_batch.to(DEVICE), caption_batch.to(DEVICE)
         optimizer.zero_grad()
         pred = model(img_batch)
 
+        #print("Dimensiones de pred:", pred.shape)
+        #print("Dimensiones de caption_batch:", caption_batch.shape)
+
         loss = criterion(pred.reshape(-1, NUM_CHAR), caption_batch.reshape(-1).contiguous())
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-
+        
+        losses.append(loss.item())
 
         pred = pred.argmax(dim=1).tolist()
         pred = [id2str(seq) for seq in pred]
 
         #import pdb;pdb.set_trace()
         # DEBUGGEAR
+        
+    plt.plot(losses, label=f'Epoch {epoch + 1}')
+    plt.xlabel('Batch')
+    plt.ylabel('Loss')
+    plt.title('Training Losses')
+    plt.legend()
+    plt.show()
 
     avg_loss = total_loss / len(dataloader)
     return avg_loss
@@ -165,6 +175,7 @@ def train_one_epoch(model, optimizer, criterion, dataloader):
 def eval_epoch(model, criterion, dataloader,optimizer):
     model.eval()
     total_loss = 0
+    losses = []
 
     with torch.no_grad():
         for img_batch, caption_batch in dataloader:
@@ -178,11 +189,19 @@ def eval_epoch(model, criterion, dataloader,optimizer):
             #loss.backward()
             total_loss += loss.item()
 
+            losses.append(loss.item())
 
             pred = pred.argmax(dim=1).tolist()
             pred = [id2str(seq) for seq in pred]
 
 
+    plt.plot(losses, label=f'Epoch {epoch + 1}')
+    plt.xlabel('Batch')
+    plt.ylabel('Loss')
+    plt.title('Validation Losses')
+    plt.legend()
+    plt.show()
+    
     avg_loss = total_loss / len(dataloader)
     return avg_loss
 
@@ -210,3 +229,4 @@ if __name__ == "__main__":
     torch.save(model.state_dict(),'/fhome/gia03/Gloria/model_epoch35.pth')
   
     pass
+
