@@ -231,7 +231,7 @@ import torchvision.transforms as T
 
 #show the tensor image
 import matplotlib.pyplot as plt
-def show_image(img, title=None):
+def show_image(img, title=None, epoch_num = ' '):
     """Imshow for Tensor."""
     
     #unnormalize 
@@ -246,8 +246,11 @@ def show_image(img, title=None):
     
     
     plt.imshow(img)
+    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/'+epoch_num+'_epoch_num'+'.png'
+    plt.imsave(output,img)
     if title is not None:
-        plt.title(title)
+        plt.title(epoch_num+' '+title)
+    plt.pause(0.001)  # pause a bit so that plots are updated
     plt.pause(0.001) 
 
 
@@ -572,7 +575,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
                 features = model.encoder(img[0:1].to(device))
                 caps,alphas = model.decoder.generate_caption(features,vocab=dataset.vocab)
                 caption = ' '.join(caps)
-                show_image(img[0],title=caption)
+                show_image(img[0],title=caption, epoch_num=epoch)
                 train_loss_list.append(loss.item)
                 
             model.train()
