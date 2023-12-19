@@ -1,7 +1,8 @@
 
 import pandas as pd
 from tqdm import tqdm
-caption_file = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast/fast.txt'
+caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
+caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
 df = pd.read_csv(caption_file)
 print("There are {} image to captions".format(len(df)))
 df.head(7)
@@ -14,7 +15,7 @@ import matplotlib.image as mpimg
 
 data_idx = 1
 
-image_path = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast/'+df.iloc[data_idx,0]
+image_path = '/fhome/gia03/Image_Captioning_CV/testing/train/'+df.iloc[data_idx,0]
 
 img=mpimg.imread(image_path)
 plt.imshow(img)
@@ -148,8 +149,8 @@ def show_image(inp, title=None):
 
 #testing the dataset class
 dataset =  FlickrDataset(
-    root_dir ='/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast',
-    captions_file = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast/fast.txt',
+    root_dir ='/fhome/gia03/Image_Captioning_CV/testing/train/',
+    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
     transform=transforms, freq_threshold=1
 )
 
@@ -264,8 +265,8 @@ transforms = T.Compose([
 
 #testing the dataset class
 dataset =  FlickrDataset(
-    root_dir = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast',
-    captions_file = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/fast/fast.txt',
+    root_dir = '/fhome/gia03/Image_Captioning_CV/testing/train/',
+    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
     transform=transforms
 )
 
