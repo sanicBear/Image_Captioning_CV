@@ -641,19 +641,19 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
             print(f"Image not found: {image_filename}")
             print(image_filename)
             
-
+        else:
         # Load and preprocess the image
-        image = Image.open(image_path).convert('RGB')
-        image = transform(image).unsqueeze(0).to(device)
+            image = Image.open(image_path).convert('RGB')
+            image = transform(image).unsqueeze(0).to(device)
 
-        # Generate captions for the image
-        with torch.no_grad():
-            features = model.encoder(image)
-            captions, _ = model.decoder.generate_caption(features, vocab=vocab, max_len=max_len)
-            generated_caption = ' '.join(captions)
-        # Update the CSV row with the generated caption
-        df.at[index, 'predicted_captions'] = generated_caption
-    
+            # Generate captions for the image
+            with torch.no_grad():
+                features = model.encoder(image)
+                captions, _ = model.decoder.generate_caption(features, vocab=vocab, max_len=max_len)
+                generated_caption = ' '.join(captions)
+            # Update the CSV row with the generated caption
+                df.at[index, 'predicted_captions'] = generated_caption
+        
 
     # Save the updated CSV with predicted captions
     df.to_csv(output_csv_path, index=False)
