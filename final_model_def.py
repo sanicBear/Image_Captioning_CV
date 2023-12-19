@@ -216,7 +216,7 @@ for i in range(BATCH_SIZE):
 
 
 #location of the training data 
-data_location =  '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/fast'
+data_location =  '/fhome/gia03/Image_Captioning_CV/testing/train/'
 
 
 #imports
@@ -246,7 +246,7 @@ def show_image(img, title=None, epoch_num = ' '):
     
     
     plt.imshow(img)
-    output = '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/testing/plots/'+str(epoch_num)+'_epoch_num'+'.png'
+    output = '/fhome/gia03/Image_Captioning_CV/testing/train/plots/'+str(epoch_num)+'_epoch_num'+'.png'
     
     if title is not None:
         plt.title(str(epoch_num)+' '+title)
