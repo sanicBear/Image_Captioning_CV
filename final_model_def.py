@@ -541,7 +541,7 @@ def save_model(model,num_epochs):
 
 
 num_epochs = 2
-print_every = 
+print_every = 1
 train_loss_list = []
 for epoch in tqdm(range(1,num_epochs+1)):   
     for idx, (image, captions) in tqdm(enumerate(iter(data_loader))):
