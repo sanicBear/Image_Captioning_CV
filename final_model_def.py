@@ -509,7 +509,7 @@ def save_model(model,num_epochs):
     torch.save(model_state,'attention_model_state.pth')
 
 
-num_epochs = 1
+num_epochs = 8
 print_every = 1
 
 for epoch in tqdm(range(1,num_epochs+1)):   
