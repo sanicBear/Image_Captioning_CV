@@ -250,6 +250,7 @@ def show_image(img, title=None, epoch_num = ' '):
     plt.imsave(output,img)
     if title is not None:
         plt.title(str(epoch_num)+' '+title)
+    plt.imsave(output,img)
     plt.pause(0.001)  # pause a bit so that plots are updated
    
 
