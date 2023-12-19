@@ -511,8 +511,8 @@ def save_model(model,num_epochs):
 
 
 num_epochs = 8
-print_every = 1
-
+print_every = 40
+train_loss_list = []
 for epoch in tqdm(range(1,num_epochs+1)):   
     for idx, (image, captions) in enumerate(iter(data_loader)):
         image,captions = image.to(device),captions.to(device)
@@ -535,6 +535,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
 
         if (idx+1)%print_every == 0:
             print("Epoch: {} loss: {:.5f}".format(epoch,loss.item()))
+    train_loss_list.append(loss.item)
             
             
             #generate the caption
