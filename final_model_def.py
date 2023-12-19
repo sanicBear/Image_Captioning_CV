@@ -572,7 +572,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
                 features = model.encoder(img[0:1].to(device))
                 caps,alphas = model.decoder.generate_caption(features,vocab=dataset.vocab)
                 caption = ' '.join(caps)
-                show_image(img[0],title=caption, epoch_num = epoch)
+                show_image(img[0],title=caption)
                 train_loss_list.append(loss.item)
                 
             model.train()
