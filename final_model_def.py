@@ -143,7 +143,7 @@ def show_image(inp, epoch_num =' ', title=None, ):
     inp = inp.numpy().transpose((1, 2, 0))
     plt.imshow(inp)
     output = '/fhome/gia03/Image_Captioning_CV/testing/plots/'+epoch_num+'_epoch_num'+'.png'
-    plt.savefig(output,inp)
+    #plt.savefig(output,inp)
     if title is not None:
         plt.title(epoch_num+' '+title)
     plt.pause(0.001)  # pause a bit so that plots are updated
@@ -541,7 +541,7 @@ def save_model(model,num_epochs):
 
 
 num_epochs = 2
-print_every = 50
+print_every = 
 train_loss_list = []
 for epoch in tqdm(range(1,num_epochs+1)):   
     for idx, (image, captions) in tqdm(enumerate(iter(data_loader))):
