@@ -497,6 +497,30 @@ criterion = nn.CrossEntropyLoss(ignore_index=dataset.vocab.stoi["<PAD>"])
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 
+def plot_and_save_loss(training_loss, file_name='training_loss.png'):
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+
+    # Plot the training loss
+    ax.plot(training_loss, label='Training Loss')
+
+    # Add title and labels
+    ax.set_title('Training Loss Over Epochs')
+    ax.set_xlabel('Epochs')
+    ax.set_ylabel('Loss')
+
+    # Add a legend
+    ax.legend()
+
+    # Save the figure
+    fig.savefig(file_name)
+
+
+
+
+
+
+
 #helper function to save the model
 def save_model(model,num_epochs):
     model_state = {
@@ -555,4 +579,6 @@ for epoch in tqdm(range(1,num_epochs+1)):
         
     #save the latest model
     save_model(model,epoch)
+    # Example usage
+plot_and_save_loss(train_loss_list, '/fhome/gia03/Image_Captioning_CV/testing/plots/my_training_loss_plot.png')
 
