@@ -610,6 +610,7 @@ def generate_caption(model_path, image_path, vocab, max_len=20, device='cuda'):
 def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv_path, max_len=20, device='cuda'):
     # Load the CSV file containing image filenames and captions
     df = pd.read_csv(csv_path)
+    df.at[index, 'predicted_captions'] = 0
 
     # Create an instance of your model and load the model state
     saved_model_state = torch.load(model_path)
@@ -633,12 +634,13 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
     # Iterate over rows in the CSV file and generate captions
     for index, row in tqdm(df.iterrows()):
         image_filename = row['image']
-        image_path = os.path.join(image_dir, image_filename)
+        image_path = image_dir+image_filename
 
         # Check if the image file exists
         if not os.path.exists(image_path):
             print(f"Image not found: {image_filename}")
-            continue
+            print(image_filename)
+            
 
         # Load and preprocess the image
         image = Image.open(image_path).convert('RGB')
@@ -649,16 +651,16 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
             features = model.encoder(image)
             captions, _ = model.decoder.generate_caption(features, vocab=vocab, max_len=max_len)
             generated_caption = ' '.join(captions)
-
         # Update the CSV row with the generated caption
         df.at[index, 'predicted_captions'] = generated_caption
+    
 
     # Save the updated CSV with predicted captions
     df.to_csv(output_csv_path, index=False)
 
 # Example usage:
 csv_path = '/fhome/gia03/Image_Captioning_CV/testing/test/test.txt'
-image_dir = '/fhome/gia03/Image_Captioning_CV/testing/test'
+image_dir = '/fhome/gia03/Image_Captioning_CV/testing/test/'
 model_path = 'attention_model_state.pth'
 vocab = dataset.vocab
 output_csv_path = '/fhome/gia03/Image_Captioning_CV/testing/test/test_predictions'
