@@ -1,7 +1,7 @@
 import pandas as pd
 from nltk.translate.bleu_score import corpus_bleu, sentence_bleu, SmoothingFunction
 from rouge import Rouge
-from meteor import Meteor
+#from meteor import Meteor
 
 def compute_metrics_for_csv(csv_path):
     # Load the CSV file containing "captions" and "predicted captions" columns
@@ -29,11 +29,11 @@ def compute_metrics_for_csv(csv_path):
     rouge_scores = rouge.get_scores(predicted_captions, captions, avg=True)
 
     # Initialize METEOR scorer
-    meteor = Meteor()
+    #meteor = Meteor()
 
     # Compute METEOR scores
-    meteor_scores = [meteor.single_meteor_score(predicted_caption, caption) for predicted_caption, caption in zip(predicted_captions, captions)]
-    corpus_meteor = meteor.corpus_meteor_score(captions, predicted_captions)
+    #meteor_scores = [meteor.single_meteor_score(predicted_caption, caption) for predicted_caption, caption in zip(predicted_captions, captions)]
+    #corpus_meteor = meteor.corpus_meteor_score(captions, predicted_captions)
 
     metrics = {
         "BLEU-1": {
@@ -45,10 +45,10 @@ def compute_metrics_for_csv(csv_path):
             "corpus_score": corpus_bleu2
         },
         "ROUGE": rouge_scores,
-        "METEOR": {
-            "sentence_scores": meteor_scores,
-            "corpus_score": corpus_meteor
-        }
+        #"METEOR": {
+            #"sentence_scores": meteor_scores,
+            #"corpus_score": corpus_meteor
+        #}
     }
 
     return metrics
