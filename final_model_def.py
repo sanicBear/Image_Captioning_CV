@@ -246,12 +246,12 @@ def show_image(img, title=None, epoch_num = ' '):
     
     
     plt.imshow(img)
-    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/'+epoch_num+'_epoch_num'+'.png'
+    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/'+str(epoch_num)+'_epoch_num'+'.png'
     plt.imsave(output,img)
     if title is not None:
-        plt.title(epoch_num+' '+title)
+        plt.title(str(epoch_num)+' '+title)
     plt.pause(0.001)  # pause a bit so that plots are updated
-    plt.pause(0.001) 
+   
 
 
 data_location =  '/home/sisard/Documents/year_semester_1/Computer_Vision/Image_Captioning/git_repo/Image_Captioning_CV/fast'
