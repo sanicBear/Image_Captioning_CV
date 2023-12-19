@@ -1,6 +1,7 @@
 
 import pandas as pd
 from tqdm import tqdm
+import json
 caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
 caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
 df = pd.read_csv(caption_file)
