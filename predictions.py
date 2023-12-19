@@ -654,7 +654,7 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
 
                 
             # Update the CSV row with the generated caption
-                row['predicted_captions'] = generated_caption
+            df.at[index, 'predicted_captions'] = generated_caption
         
 
     # Save the updated CSV with predicted captions
@@ -665,5 +665,5 @@ csv_path = '/fhome/gia03/Image_Captioning_CV/testing/test/test.txt'
 image_dir = '/fhome/gia03/Image_Captioning_CV/testing/test/'
 model_path = 'attention_model_state.pth'
 vocab = dataset.vocab
-output_csv_path = '/fhome/gia03/Image_Captioning_CV/testing/test/test_predictions'
+output_csv_path = '/fhome/gia03/Image_Captioning_CV/testing/test/test_predictions.csv'
 generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv_path)
