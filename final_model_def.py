@@ -138,12 +138,14 @@ transforms = T.Compose([
 ])
 
 
-def show_image(inp, title=None):
+def show_image(inp, title=None, epoch = ' '):
     """Imshow for Tensor."""
     inp = inp.numpy().transpose((1, 2, 0))
     plt.imshow(inp)
+    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/epoch.png'
+    plt.imsave(output,inp)
     if title is not None:
-        plt.title(title)
+        plt.title(epoch+' '+title)
     plt.pause(0.001)  # pause a bit so that plots are updated
 
 
@@ -514,7 +516,7 @@ num_epochs = 8
 print_every = 40
 train_loss_list = []
 for epoch in tqdm(range(1,num_epochs+1)):   
-    for idx, (image, captions) in enumerate(iter(data_loader)):
+    for idx, (image, captions) in tqdm(enumerate(iter(data_loader))):
         image,captions = image.to(device),captions.to(device)
 
         # Zero the gradients.
@@ -535,7 +537,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
 
         if (idx+1)%print_every == 0:
             print("Epoch: {} loss: {:.5f}".format(epoch,loss.item()))
-    train_loss_list.append(loss.item)
+    
             
             
             #generate the caption
@@ -546,7 +548,8 @@ for epoch in tqdm(range(1,num_epochs+1)):
                 features = model.encoder(img[0:1].to(device))
                 caps,alphas = model.decoder.generate_caption(features,vocab=dataset.vocab)
                 caption = ' '.join(caps)
-                #show_image(img[0],title=caption)
+                show_image(img[0],title=caption, epoch = epoch)
+                train_loss_list.append(loss.item)
                 
             model.train()
         
