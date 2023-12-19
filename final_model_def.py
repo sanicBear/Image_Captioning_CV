@@ -138,7 +138,7 @@ transforms = T.Compose([
 ])
 
 
-def show_image(inp, title=None, epoch_num = ' '):
+def show_image(inp, epoch_num =' ', title=None, ):
     """Imshow for Tensor."""
     inp = inp.numpy().transpose((1, 2, 0))
     plt.imshow(inp)
@@ -211,7 +211,7 @@ for i in range(BATCH_SIZE):
     eos_index = caption_label.index('<EOS>')
     caption_label = caption_label[1:eos_index]
     caption_label = ' '.join(caption_label)                      
-    show_image(img,caption_label)
+    show_image(img,title = caption_label)
     plt.show()
 
 
@@ -572,7 +572,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
                 features = model.encoder(img[0:1].to(device))
                 caps,alphas = model.decoder.generate_caption(features,vocab=dataset.vocab)
                 caption = ' '.join(caps)
-                show_image(img[0],title=caption, epoch=epoch)
+                show_image(img[0],title=caption, epoch_num = epoch)
                 train_loss_list.append(loss.item)
                 
             model.train()
