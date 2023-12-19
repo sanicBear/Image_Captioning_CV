@@ -631,7 +631,7 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
     ])
 
     # Iterate over rows in the CSV file and generate captions
-    for index, row in df.iterrows():
+    for index, row in tqdm(df.iterrows()):
         image_filename = row['image']
         image_path = os.path.join(image_dir, image_filename)
 
