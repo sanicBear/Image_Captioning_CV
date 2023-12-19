@@ -536,8 +536,8 @@ def save_model(model,num_epochs):
     torch.save(model_state,'attention_model_state.pth')
 
 
-num_epochs = 8
-print_every = 40
+num_epochs = 20
+print_every = 50
 train_loss_list = []
 for epoch in tqdm(range(1,num_epochs+1)):   
     for idx, (image, captions) in tqdm(enumerate(iter(data_loader))):
