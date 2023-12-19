@@ -506,7 +506,7 @@ def plot_and_save_loss(training_loss, file_name='training_loss.png'):
     fig, ax = plt.subplots()
 
     # Plot the training loss
-    ax.plot(training_loss, label='Training Loss')
+    #ax.plot(training_loss, label='Training Loss')
 
     # Add title and labels
     ax.set_title('Training Loss Over Epochs')
@@ -517,7 +517,7 @@ def plot_and_save_loss(training_loss, file_name='training_loss.png'):
     ax.legend()
 
     # Save the figure
-    fig.savefig(file_name)
+    plt.savefig(file_name)
 
 
 
