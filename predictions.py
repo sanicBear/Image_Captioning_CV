@@ -610,7 +610,7 @@ def generate_caption(model_path, image_path, vocab, max_len=20, device='cuda'):
 def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv_path, max_len=20, device='cuda'):
     # Load the CSV file containing image filenames and captions
     df = pd.read_csv(csv_path)
-    df['predicted_captions'] = 'place holder'
+    df['predicted_captions'] = np.NaN
 
     # Create an instance of your model and load the model state
     saved_model_state = torch.load(model_path)
@@ -656,7 +656,7 @@ def generate_captions_for_csv(csv_path, image_dir, model_path, vocab, output_csv
             # Update the CSV row with the generated caption
             df.at[index, 'predicted_captions'] = generated_caption
         
-
+    df = df.dropna(inplace=True)
     # Save the updated CSV with predicted captions
     df.to_csv(output_csv_path, index=False)
 
