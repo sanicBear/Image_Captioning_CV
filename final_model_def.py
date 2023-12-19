@@ -138,14 +138,14 @@ transforms = T.Compose([
 ])
 
 
-def show_image(inp, title=None, epoch = ' '):
+def show_image(inp, title=None, epoch_num = ' '):
     """Imshow for Tensor."""
     inp = inp.numpy().transpose((1, 2, 0))
     plt.imshow(inp)
-    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/epoch.png'
+    output = '/fhome/gia03/Image_Captioning_CV/testing/plots/'+epoch_num+'_epoch_num'+'.png'
     plt.imsave(output,inp)
     if title is not None:
-        plt.title(epoch+' '+title)
+        plt.title(epoch_num+' '+title)
     plt.pause(0.001)  # pause a bit so that plots are updated
 
 
@@ -572,7 +572,7 @@ for epoch in tqdm(range(1,num_epochs+1)):
                 features = model.encoder(img[0:1].to(device))
                 caps,alphas = model.decoder.generate_caption(features,vocab=dataset.vocab)
                 caption = ' '.join(caps)
-                show_image(img[0],title=caption, epoch = epoch)
+                show_image(img[0],title=caption, epoch=epoch)
                 train_loss_list.append(loss.item)
                 
             model.train()
