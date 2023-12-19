@@ -128,8 +128,8 @@ class CustomDataset(torch.utils.data.Dataset):
         # Load and preprocess the image
         image = Image.open(image_path).convert("RGB")
         
-        image = self.transform(image)
-
+        if self.transform:
+            image = self.transform(image)
 
         return image, caption
 
