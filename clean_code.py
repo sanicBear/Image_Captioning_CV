@@ -62,7 +62,7 @@ class TextVocabulary:
 
     def convert_to_index(self, text):
         tokenized_text = tokenize_text(text)
-        return [self.word_to_index.get(token, self.word_to_index["<UNK>"]) for token in tokenized_text]
+        return [ self.word_to_index[token] if token in self.word_to_index else self.word_to_index["<UNK>"] for token in tokenized_text ]
 
 
 # Image dataset class
