@@ -1,34 +1,8 @@
 
 import pandas as pd
 from tqdm import tqdm
-caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
-caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
-df = pd.read_csv(caption_file)
-print("There are {} image to captions".format(len(df)))
-df.head(7)
-
-
-
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
-
-data_idx = 1
-
-image_path = '/fhome/gia03/Image_Captioning_CV/testing/train/'+df.iloc[data_idx,0]
-
-img=mpimg.imread(image_path)
-plt.imshow(img)
-plt.show()
-
-#image consits of 5 captions,
-#showing all 5 captions of the image of the given idx 
-for i in range(data_idx,data_idx+2):
-    print("Caption:",df.iloc[i,1])
-
-
-
-
 import os
 from collections import Counter
 import spacy
@@ -36,15 +10,11 @@ import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader,Dataset
 import torchvision.transforms as T
-
 from PIL import Image
-
-
-spacy_eng = spacy.load('en_core_web_sm')
-
-#example
-text = "This is a good place to find a city"
-[token.text.lower() for token in spacy_eng.tokenizer(text)]
+import numpy as np
+import torch
+from torch.utils.data import DataLoader,Dataset
+import matplotlib.pyplot as plt
 
 
 class Vocabulary:
@@ -87,9 +57,6 @@ class Vocabulary:
     
 
 
-v = Vocabulary(freq_threshold=1)
-
-v.build_vocab(["This is a good place to find a city"])
 
 class FlickrDataset(Dataset):
     """
@@ -131,12 +98,6 @@ class FlickrDataset(Dataset):
         return img, torch.tensor(caption_vec)
 
 
-#defing the transform to be applied
-transforms = T.Compose([
-    T.Resize((224,224)),
-    T.ToTensor()
-])
-
 
 def show_image(inp, epoch_num =' ', title=None, ):
     """Imshow for Tensor."""
@@ -148,18 +109,6 @@ def show_image(inp, epoch_num =' ', title=None, ):
         plt.title(epoch_num+' '+title)
     plt.pause(0.001)  # pause a bit so that plots are updated
 
-
-#testing the dataset class
-dataset =  FlickrDataset(
-    root_dir ='/fhome/gia03/Image_Captioning_CV/testing/train/',
-    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
-    transform=transforms, freq_threshold=1
-)
-
-
-img, caps = dataset[0]
-
-#show_image(img,'Image')
 
 
 class CapsCollate:
@@ -179,58 +128,8 @@ class CapsCollate:
         return imgs,targets
 
 
-#setting the constants
-BATCH_SIZE = 16
-NUM_WORKER = 1
-
-#token to represent the padding
-pad_idx = dataset.vocab.stoi["<PAD>"]
-
-data_loader = DataLoader(
-    dataset=dataset,
-    batch_size=BATCH_SIZE,
-    num_workers=NUM_WORKER,
-    shuffle=True,
-    collate_fn=CapsCollate(pad_idx=pad_idx,batch_first=True)
-)
 
 
-#generating the iterator from the dataloader
-dataiter = iter(data_loader)
-
-#getting the next batch
-batch = next(dataiter)
-
-#unpacking the batch
-images, captions = batch
-
-#showing info of image in single batch
-for i in range(BATCH_SIZE):
-    img,cap = images[i],captions[i]
-    caption_label = [dataset.vocab.itos[token] for token in cap.tolist()]
-    eos_index = caption_label.index('<EOS>')
-    caption_label = caption_label[1:eos_index]
-    caption_label = ' '.join(caption_label)                      
-    show_image(img,title = caption_label)
-    plt.show()
-
-
-#location of the training data 
-data_location =  '/fhome/gia03/Image_Captioning_CV/testing/train/'
-
-
-#imports
-import numpy as np
-import torch
-from torch.utils.data import DataLoader,Dataset
-import torchvision.transforms as T
-
-
-
-
-
-#show the tensor image
-import matplotlib.pyplot as plt
 def show_image(img, title=None, epoch_num = ' '):
     """Imshow for Tensor."""
     
@@ -253,43 +152,6 @@ def show_image(img, title=None, epoch_num = ' '):
     plt.savefig(output)
     plt.pause(0.001)  # pause a bit so that plots are updated
    
-
-
-data_location =  '/fhome/gia03/Image_Captioning_CV/testing/train'
-BATCH_SIZE = 32
-# BATCH_SIZE = 6
-NUM_WORKER = 4
-
-#defining the transform to be applied
-transforms = T.Compose([
-    T.Resize(226),                     
-    T.RandomCrop(224),                 
-    T.ToTensor(),                               
-    T.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
-])
-
-
-#testing the dataset class
-dataset =  FlickrDataset(
-    root_dir = '/fhome/gia03/Image_Captioning_CV/testing/train/',
-    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
-    transform=transforms
-)
-
-data_loader = DataLoader(
-    dataset=dataset,
-    batch_size=BATCH_SIZE,
-    num_workers=NUM_WORKER,
-    shuffle=True,
-    collate_fn=CapsCollate(pad_idx=pad_idx,batch_first=True)
-)
-
-#vocab_size
-vocab_size = len(dataset.vocab)
-print(vocab_size)
-print(vocab_size)
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device
 
 
 import torch
@@ -478,6 +340,122 @@ class EncoderDecoder(nn.Module):
         features = self.encoder(images)
         outputs = self.decoder(features, captions)
         return outputs
+
+
+caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
+df = pd.read_csv(caption_file)
+data_idx = 1
+image_path = '/fhome/gia03/Image_Captioning_CV/testing/train/'+df.iloc[data_idx,0]
+print("There are {} image to captions".format(len(df)))
+print(df.head(7))
+
+spacy_eng = spacy.load('en_core_web_sm')
+
+v = Vocabulary(freq_threshold=1)
+
+v.build_vocab(["This is a good place to find a city"])
+
+#defing the transform to be applied
+transforms = T.Compose([
+    T.Resize((224,224)),
+    T.ToTensor()
+])
+
+#testing the dataset class
+dataset =  FlickrDataset(
+    root_dir ='/fhome/gia03/Image_Captioning_CV/testing/train/',
+    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
+    transform=transforms, freq_threshold=1
+)
+
+
+img, caps = dataset[0]
+
+
+#setting the constants
+BATCH_SIZE = 16
+NUM_WORKER = 1
+
+#token to represent the padding
+pad_idx = dataset.vocab.stoi["<PAD>"]
+
+data_loader = DataLoader(
+    dataset=dataset,
+    batch_size=BATCH_SIZE,
+    num_workers=NUM_WORKER,
+    shuffle=True,
+    collate_fn=CapsCollate(pad_idx=pad_idx,batch_first=True)
+)
+
+
+#generating the iterator from the dataloader
+dataiter = iter(data_loader)
+
+#getting the next batch
+batch = next(dataiter)
+
+#unpacking the batch
+images, captions = batch
+
+#showing info of image in single batch
+for i in range(BATCH_SIZE):
+    img,cap = images[i],captions[i]
+    caption_label = [dataset.vocab.itos[token] for token in cap.tolist()]
+    eos_index = caption_label.index('<EOS>')
+    caption_label = caption_label[1:eos_index]
+    caption_label = ' '.join(caption_label)                      
+    show_image(img,title = caption_label)
+    plt.show()
+
+
+#location of the training data 
+data_location =  '/fhome/gia03/Image_Captioning_CV/testing/train/'
+
+BATCH_SIZE = 32
+# BATCH_SIZE = 6
+NUM_WORKER = 4
+
+#defining the transform to be applied
+transforms = T.Compose([
+    T.Resize(226),                     
+    T.RandomCrop(224),                 
+    T.ToTensor(),                               
+    T.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
+])
+
+
+#testing the dataset class
+dataset =  FlickrDataset(
+    root_dir = '/fhome/gia03/Image_Captioning_CV/testing/train/',
+    captions_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt',
+    transform=transforms
+)
+
+data_loader = DataLoader(
+    dataset=dataset,
+    batch_size=BATCH_SIZE,
+    num_workers=NUM_WORKER,
+    shuffle=True,
+    collate_fn=CapsCollate(pad_idx=pad_idx,batch_first=True)
+)
+
+#vocab_size
+vocab_size = len(dataset.vocab)
+print(vocab_size)
+print(vocab_size)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 embed_size=300
