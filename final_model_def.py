@@ -342,18 +342,23 @@ class EncoderDecoder(nn.Module):
         return outputs
 
 
+
+
+
+
+
+
 caption_file = '/fhome/gia03/Image_Captioning_CV/testing/train/train.txt'
 df = pd.read_csv(caption_file)
 data_idx = 1
-image_path = '/fhome/gia03/Image_Captioning_CV/testing/train/'+df.iloc[data_idx,0]
 print("There are {} image to captions".format(len(df)))
 print(df.head(7))
 
 spacy_eng = spacy.load('en_core_web_sm')
 
-v = Vocabulary(freq_threshold=1)
+#v = Vocabulary(freq_threshold=1)
 
-v.build_vocab(["This is a good place to find a city"])
+#v.build_vocab(["This is a good place to find a city"])
 
 #defing the transform to be applied
 transforms = T.Compose([
