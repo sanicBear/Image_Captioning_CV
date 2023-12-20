@@ -363,7 +363,7 @@ model = EncoderDecoderModel(
 ).to(device)
 
 # Loss function and Optimizer
-criterion = nn.CrossEntropyLoss(ignore_index=image_dataset.vocab.stoi["<PAD>"])
+criterion = nn.CrossEntropyLoss(ignore_index=image_dataset.vocabulary.stoi["<PAD>"])
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 
