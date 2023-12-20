@@ -156,7 +156,7 @@ class EncoderCNN(nn.Module):
     def __init__(self):
         super(EncoderCNN, self).__init__()
         # Load a pre-trained ResNet-50 model.
-        resnet = models.resnet50(pretrained=True)
+        resnet = models.resnet50(weights=True)
         # Freezing the parameters of the ResNet-50 model to prevent them from being updated during training.
         for param in resnet.parameters():
             param.requires_grad_(False)
