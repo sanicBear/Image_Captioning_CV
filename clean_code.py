@@ -322,7 +322,7 @@ def generate_image_captions_with_attention(encoder, decoder, image, vocabulary, 
 
 
 
-print('funciona?')
+
 
 #Instantitate de vocabulary
 vocab = TextVocabulary(min_freq=1)
@@ -349,7 +349,7 @@ image_loader = DataLoader(
 
 # Instantiate the model
 embed_size = 300
-vocab_size = len(image_dataset.vocab)
+vocab_size = len(vocab)
 attention_dim = 256
 encoder_dim = 2048
 decoder_dim = 512
