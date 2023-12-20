@@ -198,7 +198,7 @@ class CaptionDecoder(nn.Module):
         return h, c
 
     def forward(self, image_features, captions):
-        embedded_captions = self.embedding_layer(captions)
+        embedded_captions = self.embedding(captions)
         h, c = self.init_hidden_state(image_features)  # Initialize hidden and cell states
 
         seq_length = len(captions[0]) - 1  # Exclude the <EOS> token
@@ -207,10 +207,10 @@ class CaptionDecoder(nn.Module):
 
         predictions = torch.zeros(batch_size, seq_length, self.vocab_size).to(device)
         for t in range(seq_length):
-            context_vector, attention_weights = self.attention_layer(image_features, h)
+            context_vector, attention_weights = self.attention(image_features, h)
             lstm_input = torch.cat((embedded_captions[:, t], context_vector), dim=1)
-            h, c = self.lstm_cell(lstm_input, (h, c))
-            output = self.decoder_fc(self.dropout(h))
+            h, c = self.decode_step(lstm_input, (h, c))
+            output = self.fc(self.dropout(h))
             predictions[:, t] = output
 
         return predictions

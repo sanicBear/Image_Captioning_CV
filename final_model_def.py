@@ -94,7 +94,7 @@ v.build_vocab(["This is a good place to find a city"])
 class FlickrDataset(Dataset):
     """
     FlickrDataset
-    """
+    """ 
     def __init__(self,root_dir,captions_file,transform=None,freq_threshold=1):
         self.root_dir = root_dir
         self.df = pd.read_csv(captions_file)
@@ -488,7 +488,7 @@ decoder_dim=512
 learning_rate = 3e-4
 
 
-#init model
+#init modelr
 model = EncoderDecoder(
     embed_size=300,
     vocab_size = len(dataset.vocab),
@@ -657,3 +657,4 @@ img1 = images[0].detach().clone()
 caps,alphas = get_caps_from(img.unsqueeze(0))
 name =  '/fhome/gia03/Image_Captioning_CV/testing/plots/atention_3.png'
 plot_attention(img1, caps, alphas,name)
+
